@@ -111,4 +111,32 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ onBookingComplete, onGoToOrde
       <p className="text-gray-600 mb-6">Your lab test has been successfully scheduled.</p>
       <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 text-left mb-6">
         <p className="text-sm text-gray-500">Order ID</p>
-        <p className="font-mono text-lg font-semibold text-gray-800 mb-4">{
+        <p className="font-mono text-lg font-semibold text-gray-800 mb-4">{newOrderId}</p>
+        <p className="text-sm text-gray-500 mt-4">Selected Test</p>
+        <p className="font-semibold text-gray-800">{selectedTest?.name}</p>
+        <p className="text-sm text-gray-500 mt-4">Collection Date & Time</p>
+        <p className="font-semibold text-gray-800">{bookingDate} at {bookingTime}</p>
+        <p className="text-sm text-gray-500 mt-4">Collection Address</p>
+        <p className="font-semibold text-gray-800">{address}</p>
+      </div>
+      <div className="flex flex-col sm:flex-row gap-4">
+        <button onClick={onGoToOrders} className="w-full bg-teal-600 text-white py-3 px-4 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 font-semibold">
+          Track My Order
+        </button>
+        <button onClick={() => { setStep('SELECT_TEST'); setSelectedTest(null); }} className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-200 border border-gray-300 font-semibold">
+          Book Another Test
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="p-4 md:p-8">
+      {step === 'SELECT_TEST' && renderSelectTest()}
+      {step === 'SCHEDULE' && renderSchedule()}
+      {step === 'CONFIRMATION' && renderConfirmation()}
+    </div>
+  );
+};
+
+export default BookingFlow;

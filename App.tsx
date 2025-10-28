@@ -6,13 +6,15 @@ import BookingFlow from './components/BookingFlow';
 import OrderHistory from './components/OrderHistory';
 import Results from './components/Results';
 import OrderDetail from './components/OrderDetail';
-import { BookTestIcon, ChevronLeftIcon, ClipboardListIcon, DocumentTextIcon, HomeIcon, MyOrdersIcon, MyResultsIcon } from './components/icons/Icon';
+import Chatbot from './components/Chatbot';
+import { BookTestIcon, ChevronLeftIcon, HomeIcon, MyOrdersIcon, MyResultsIcon, ChatbotIcon } from './components/icons/Icon';
 
 const App: React.FC = () => {
   const [view, setView] = useState<View>(View.DASHBOARD);
   const [orders, setOrders] = useState<Order[]>(MOCK_ORDERS);
   const [results, setResults] = useState<TestResult[]>(MOCK_RESULTS);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   const handleBookingComplete = (newOrder: Order) => {
     setOrders(prevOrders => [newOrder, ...prevOrders]);
@@ -53,7 +55,7 @@ const App: React.FC = () => {
       case View.ORDERS:
         return <OrderHistory orders={orders} onSelectOrder={handleSelectOrder} />;
       case View.ORDER_DETAIL:
-        return selectedOrder ? <OrderDetail order={selectedOrder} /> : <OrderHistory orders={orders} onSelectOrder={handleSelectOrder}/>;
+        return selectedOrder ? <OrderDetail order={selectedOrder} onBack={() => setView(View.ORDERS)} /> : <OrderHistory orders={orders} onSelectOrder={handleSelectOrder}/>;
       case View.RESULTS:
         return <Results results={results} />;
       case View.DASHBOARD:
@@ -63,7 +65,7 @@ const App: React.FC = () => {
   };
   
   return (
-    <div className="h-screen w-screen flex flex-col bg-gray-100 font-sans antialiased">
+    <div className="h-screen w-screen flex flex-col bg-gray-100 font-sans antialiased relative">
         <Header 
             title={getTitleForView(view)} 
             showBackButton={view !== View.DASHBOARD}
@@ -75,6 +77,19 @@ const App: React.FC = () => {
                 {renderContent()}
             </div>
         </main>
+        
+        {!isChatbotOpen && (
+            <button
+              onClick={() => setIsChatbotOpen(true)}
+              className="absolute bottom-20 right-4 bg-teal-600 text-white p-3 rounded-full shadow-lg hover:bg-teal-700 transition-transform transform hover:scale-110 z-20 animate-fade-in"
+              aria-label="Open AI Assistant"
+            >
+                <ChatbotIcon className="w-7 h-7" />
+            </button>
+        )}
+        
+        {isChatbotOpen && <Chatbot onClose={() => setIsChatbotOpen(false)} />}
+
 
         <MobileBottomNav currentView={view} setView={setView} />
     </div>
